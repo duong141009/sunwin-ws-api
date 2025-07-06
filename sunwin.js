@@ -5,36 +5,31 @@ const fastify = Fastify({ logger: true });
 const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbW91bnQiOjB9.p56b5g73I9wyoVu4db679bOvVeFJWVjGDg_ulBXyav8";
 const PORT = process.env.PORT || 4000;
 
-// API key check (tùy chọn)
 const API_KEY = "tinh592007pq";
-
-// CORS cho trình duyệt
 fastify.register(require('@fastify/cors'), { origin: true });
 
-let historyData = []; // Bộ nhớ lưu dữ liệu
+let historyData = [];
 
-// Kết nối WebSocket đến Sunwin
 function connectWebSocket() {
   const ws = new WebSocket(`wss://websocket.azhkthg1.net/websocket?token=${TOKEN}`);
 
   ws.on("open", () => {
-    console.log("✅ Đã kết nối tới WebSocket Sunwin");
+    console.log("✅ Đã kết nối WebSocket Sunwin");
 
-    // Gửi auth payload
     const authPayload = [
       1,
       "MiniGame",
-      "SC_xigtupou",
-      "conga999",
+      "SC_tool1m",
+      "any-password",
       {
         info: JSON.stringify({
-          ipAddress: "171.246.10.199",
-          userId: "7c54ec3f-ee1a-428c-a56e-1bc14fd27e57",
-          username: "SC_xigtupou",
+          ipAddress: "2405:4802:1d04:cef0:27a0:a772:6d69:8d8f",
+          userId: "fd9d6b4b-ac56-4aca-87b6-50ab3376a161",
+          username: "SC_tool1m",
           timestamp: Date.now(),
-          refreshToken: "ce8de19af18f4417bb68c3632408d4d7.479079475124482181468c8923b636af"
+          refreshToken: "29be769189794e39b1a88618ca5d2983.e9404bac15d9457f86226a841685b355"
         }),
-        signature: "0EC9E9B2311CD352561D9556F88F6AB4167502EAC5F9767D07D43E521FE1BA056C7C67DF0491D20BCE9877B71373A2115CC61E9ED43B8AF1EF6EAC3757EA5B2A46BCB0C519EDCB46DB0EB9ACA445D7076CC1F3F830745609C02BE9F4D86CF419924E33EE3398F1EE4FE65FD045C1A2EE05C85CDBF2EAE6E4297E000664E4CC21"
+        signature: "0CAA038570A04E97020E166AE52B11CE2DBE2A87C260104DBC9DD4D93A92FA4CAAF00BFF1377D3317902E55F4DAD707E7BDCF46043EB098B33CF25C3AE64DDE128D31172DCCB852AB66F2D47FE766801F04DBB95ADD95C644FDC3CD7FE87FE20108FC6F1B7270A594FD056A4BB9CE3C86734087E63F48CD542003C929C062A26"
       }
     ];
 
@@ -61,8 +56,8 @@ function connectWebSocket() {
               d1: item.d1,
               d2: item.d2,
               d3: item.d3,
-              total: total,
-              result: result,
+              total,
+              result,
               timestamp: Date.now()
             };
 
@@ -74,41 +69,38 @@ function connectWebSocket() {
         });
       }
     } catch (err) {
-      console.error("❌ Lỗi WebSocket:", err.message);
+      console.error("❌ Lỗi parse dữ liệu:", err.message);
     }
   });
 
   ws.on("close", () => {
-    console.warn("⚠️ WS đóng. Kết nối lại sau 5s...");
+    console.warn("⚠️ WebSocket đóng. Tự động kết nối lại sau 5s...");
     setTimeout(connectWebSocket, 5000);
   });
 
   ws.on("error", (err) => {
-    console.error("❌ Lỗi kết nối:", err.message);
+    console.error("❌ WebSocket lỗi:", err.message);
   });
 }
 
-// Bắt đầu WebSocket
 connectWebSocket();
 
-// Tạo API để lấy dữ liệu history
-fastify.get("/api/history", (request, reply) => {
-  const key = request.query.key;
+fastify.get("/api/history", (req, reply) => {
+  const key = req.query.key;
   if (key !== API_KEY) {
     return reply.code(403).send({ error: "Sai API key" });
   }
 
   reply.send({
     status: "OK",
-    data: historyData.slice(0, 100) // Gửi 100 dòng gần nhất
+    data: historyData.slice(0, 100)
   });
 });
 
-// Khởi động server
 fastify.listen({ port: PORT, host: "0.0.0.0" }, err => {
   if (err) {
     console.error("❌ Server lỗi:", err);
     process.exit(1);
   }
-  console.log(`🚀 Server API đang chạy tại http://localhost:${PORT}`);
+  console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
 });
