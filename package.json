@@ -1,0 +1,13 @@
+{
+  "name": "sunwin-ws-api",
+  "version": "1.0.0",
+  "main": "sunwin_raw_collector.js",
+  "scripts": {
+    "start": "node sunwin_raw_collector.js"
+  },
+  "dependencies": {
+    "fastify": "^4.0.0",
+    "@fastify/cors": "^8.0.0",
+    "ws": "^8.0.0"
+  }
+}
