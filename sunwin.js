@@ -42,6 +42,8 @@ function connectWebSocket() {
   });
 
   ws.on("message", (data) => {
+    console.log("📦 WS RAW:", data.toString()); // 👈 Thêm dòng này để in tất cả dữ liệu nhận được
+
     try {
       const json = JSON.parse(data);
       if (Array.isArray(json) && json[1]?.htr) {
@@ -84,6 +86,13 @@ function connectWebSocket() {
 }
 
 connectWebSocket();
+
+fastify.get("/", (req, reply) => {
+  reply.send({
+    message: "✅ Sunwin WS API đang hoạt động!",
+    route: "/api/history?key=tinh592007pq"
+  });
+});
 
 fastify.get("/api/history", (req, reply) => {
   const key = req.query.key;
